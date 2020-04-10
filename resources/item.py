@@ -18,7 +18,7 @@ class Item(Resource):
         required=True,
         help="esse campo é obrigario"
     )
-   
+
     @jwt_required
     def get(self, name):
         item = ItemModel.find_by_name(name)
@@ -37,7 +37,7 @@ class Item(Resource):
         except:
             return {"message": "ocorreu um erro"}, 500
         return item.json(), 201
-    
+
     @jwt_required
     def delete(self, name):
         claims = get_jwt_claims()
@@ -48,8 +48,7 @@ class Item(Resource):
             item.delete_from_db()
             return {"message": "item deleted"}, 201
         return {"message": "item not exists"}, 400
-    
-    
+
     @jwt_required
     def put(self, name):
         data = Item.parser.parse_args()
@@ -60,7 +59,7 @@ class Item(Resource):
 
             item.save_to_db()
             return {"message": "updated"}, 200
- 
+
         item = ItemModel(name, **data)
         item.save_to_db()
         return {"message": "created"}, 200
@@ -71,5 +70,5 @@ class ItemList(Resource):
     def get(self):
         user_id = get_jwt_identity()
         if user_id:
-            return { "items": list(item.json() for item in ItemModel.query.all()) }
+            return {"items": list(item.json() for item in ItemModel.query.all())}
         return {"items": [], "message": "logue-se para acessar os items"}

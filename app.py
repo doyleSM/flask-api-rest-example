@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flask_restful import Api
-from flask_jwt_extended  import JWTManager
+from flask_jwt_extended import JWTManager
 from db import db
 from resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
 from resources.item import Item, ItemList
@@ -16,9 +16,11 @@ app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.secret_key = 'jose'
 api = Api(app)
 
+
 @app.before_first_request
 def create_tables():
     db.create_all()
+
 
 jwt = JWTManager(app)
 
@@ -50,6 +52,7 @@ def invalid_token_callback(error):
         "error": 'invalid_token'
     }), 401
 
+
 @jwt.unauthorized_loader
 def unauthorized_loader_callback():
     return jsonify({
@@ -65,13 +68,13 @@ def needs_fresh_token_callback():
         "error": 'fresh_token_required'
     }), 401
 
+
 @jwt.revoked_token_loader
 def revoked_token_callback():
     return jsonify({
         "description": "o token foi invalidado",
         "error": 'token_revoked'
-    }), 401    
-
+    }), 401
 
 
 api.add_resource(Item, '/item/<string:name>')
@@ -83,6 +86,8 @@ api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserLogin, '/auth')
 api.add_resource(TokenRefresh, '/refresh')
 api.add_resource(UserLogout, '/logout')
+
+
 if __name__ == '__main__':
     db.init_app(app)
     app.run(port=5001, debug=True)
