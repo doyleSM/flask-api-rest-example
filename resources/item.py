@@ -20,14 +20,16 @@ class Item(Resource):
         help="esse campo é obrigario"
     )
 
-    def get(self, name: str):
+    @classmethod
+    def get(cls, name: str):
         item = ItemModel.find_by_name(name)
         if item:
             return item.json()
         return {"message": "Item not found"}, 404
 
+    @classmethod
     @jwt_required
-    def post(self, name: str):
+    def post(cls, name: str):
         if ItemModel.find_by_name(name):
             return {"message": "Item already exists"}, 400
         data = Item.parser.parse_args()
@@ -38,16 +40,18 @@ class Item(Resource):
             return {"message": "ocorreu um erro"}, 500
         return item.json(), 201
 
+    @classmethod
     @jwt_required
-    def delete(self, name: str):
+    def delete(cls, name: str):
         item = ItemModel.find_by_name(name)
         if item:
             item.delete_from_db()
             return {"message": "item deleted"}, 201
         return {"message": "item not exists"}, 400
 
+    @classmethod
     @jwt_required
-    def put(self, name: str):
+    def put(cls, name: str):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_name(name)
         if item:
@@ -63,5 +67,7 @@ class Item(Resource):
 
 
 class ItemList(Resource):
-    def get(self):
+
+    @classmethod
+    def get(cls):
         return {"items": list(item.json() for item in ItemModel.find_all())}
