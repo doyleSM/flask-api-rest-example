@@ -30,7 +30,8 @@ _user_parser.add_argument(
 
 class UserRegister(Resource):
 
-    def post(self):
+    @classmethod
+    def post(cls):
         data = _user_parser.parse_args()
 
         if UserModel.find_by_username(data['username']):
@@ -43,7 +44,7 @@ class UserRegister(Resource):
 class User(Resource):
 
     @classmethod
-    def get(cls, user_id):
+    def get(cls, user_id: int):
         user = UserModel.find_by_id(user_id)
         if user:
             return user.json()
@@ -51,7 +52,7 @@ class User(Resource):
 
     @classmethod
     @fresh_jwt_required
-    def delete(cls, user_id):
+    def delete(cls, user_id: int):
         user = UserModel.find_by_id(user_id)
         if user:
             user.delete_from_db()
@@ -74,16 +75,20 @@ class UserLogin(Resource):
 
 
 class UserLogout(Resource):
+
+    @classmethod
     @jwt_required
-    def post(self):
+    def post(cls):
         jti = get_raw_jwt()['jti']  # wti = identificador unico do token
         BLACKLIST.add(jti)
         return {"message": "deslogado com sucesso"}
 
 
 class TokenRefresh(Resource):
+
+    @classmethod
     @jwt_refresh_token_required
-    def post(self):
+    def post(cls):
         current_user = get_jwt_identity()
         new_token = create_access_token(identity=current_user, fresh=False)
         return {"access_token": new_token}
