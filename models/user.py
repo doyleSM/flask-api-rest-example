@@ -13,11 +13,6 @@ class UserModel(db.Model):
         self.username = username
         self.password = password
 
-    def json(self) -> Dict:
-        return {
-            "id": self.id,
-            "username": self.username
-        }
 
     @classmethod
     def find_by_username(cls, username: str):
