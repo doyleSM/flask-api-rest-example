@@ -6,13 +6,8 @@ class UserModel(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
-    password = db.Column(db.String)
-
-    def __init__(self, username: str, password: str):
-        self.username = username
-        self.password = password
-
+    username = db.Column(db.String, nullable=False, unique=True)
+    password = db.Column(db.String, nullable=False)
 
     @classmethod
     def find_by_username(cls, username: str):
