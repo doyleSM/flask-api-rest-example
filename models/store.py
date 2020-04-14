@@ -10,12 +10,6 @@ class StoreModel(db.Model):
 
     items = db.relationship("ItemModel", lazy='dynamic')
 
-    def __init__(self, name: str):
-        self.name = name
-
-    def json(self) -> Dict:
-        return {"name": self.name, "items": list(item.json() for item in self.items.all())}
-
     @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()

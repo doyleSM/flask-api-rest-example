@@ -1,6 +1,8 @@
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+from marshmallow import ValidationError
+from ma import ma
 from db import db
 from resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
 from resources.item import Item, ItemList
@@ -43,4 +45,5 @@ api.add_resource(UserLogout, '/logout')
 
 if __name__ == '__main__':
     db.init_app(app)
+    ma.init_app(app)
     app.run(port=5001, debug=True)

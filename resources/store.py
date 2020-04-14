@@ -1,5 +1,10 @@
 from flask_restful import Resource
 from models.store import StoreModel
+from schemas.store import StoreSchema
+
+
+store_schema = StoreSchema()
+store_list_schema = StoreSchema(many=True)
 
 
 class Store(Resource):
@@ -8,7 +13,7 @@ class Store(Resource):
     def get(cls, name: str):
         store = StoreModel.find_by_name(name)
         if store:
-            return store.json()
+            return store_schema.dump(store)
         return {"message": "store nao encontrada"}, 404
 
     @classmethod
@@ -16,7 +21,7 @@ class Store(Resource):
         if StoreModel.find_by_name(name):
             return {"message": "ja existe store"}, 400
 
-        store = StoreModel(name)
+        store = StoreModel(name=name)
         store.save_to_db()
 
         return {"message": "store criada!"}
@@ -33,4 +38,4 @@ class Store(Resource):
 class StoreList(Resource):
     @classmethod
     def get(cls):
-        return {"stores": list(store.name for store in StoreModel.find_all())}
+        return {"stores": list(store_list_schema.dump(StoreModel.find_all()))}
