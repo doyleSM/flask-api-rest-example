@@ -23,6 +23,9 @@ api = Api(app)
 def create_tables():
     db.create_all()
 
+@app.errorhandler(ValidationError)
+def handle_marshmallow_validation(err):
+    return jsonify(err.messges), 400
 
 jwt = JWTManager(app)
 
