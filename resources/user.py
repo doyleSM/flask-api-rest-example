@@ -1,3 +1,4 @@
+import traceback
 from flask_restful import Resource, request
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import (
@@ -18,6 +19,7 @@ from schemas.user import UserSchema
 user_schema = UserSchema()
 
 
+
 class UserRegister(Resource):
 
     @classmethod
@@ -30,9 +32,16 @@ class UserRegister(Resource):
         if UserModel.find_by_username(user.username):
             return {"message": "user with this username already exists"}, 400
 
-        user.save_to_db()
+        if UserModel.find_by_email(user.email):
+            return {"message": "user with this email already exists"}, 400
 
-        return {"message": "User Created"}, 201
+        try:
+            user.save_to_db()
+            user.send_confirmation_email()
+            return {"message": "Por favor ative no email"}, 201
+        except:
+            traceback.print_exc()
+            return{"message": "erro na criacao"}, 500
 
 
 class User(Resource):
@@ -60,7 +69,7 @@ class UserLogin(Resource):
     def post(cls):
         try:
             user_json = request.get_json()
-            user_data = user_schema.load(user_json)
+            user_data = user_schema.load(user_json, partial=("email",))
 
         except ValidationError as e:
             return e.messages, 400
@@ -69,7 +78,8 @@ class UserLogin(Resource):
 
         if user and safe_str_cmp(user.password, user_data.password):
             if user.activated:
-                access_token = create_access_token(identity=user.id, fresh=True)
+                access_token = create_access_token(
+                    identity=user.id, fresh=True)
                 refresh_token = create_refresh_token(user.id)
                 return {"access_token": access_token, "refresh_token": refresh_token}
             return {"message": "Conta não confirmada, por favor, verifique seu email"}, 400
@@ -94,3 +104,14 @@ class TokenRefresh(Resource):
         current_user = get_jwt_identity()
         new_token = create_access_token(identity=current_user, fresh=False)
         return {"access_token": new_token}
+
+
+class UserConfirm(Resource):
+    @classmethod
+    def get(cls, user_id: int):
+        user = UserModel.find_by_id(user_id)
+        if user:
+            user.activated = True
+            user.save_to_db()
+            return {"message": "User activated"}
+        return {"message": "user not found"}, 404
