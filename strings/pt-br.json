@@ -1,0 +1,28 @@
+{
+   "confirmation_not_found": "Confirmação de email não encontrada",
+   "alread_email_confirm": "Esse email já foi confirmado",
+   "success_confirmation": "Endereço de email confirmado com sucesso",
+   "expired_token": "Token expirado",
+   "new_email_confirmation": "Reenvio de confirmação realizado, verifique seu email",
+   
+   "error_500": "Um erro inesperado ocorreu",
+   
+   "item_not_found": "Item não encontrado",
+   "item_already_exist": "Um item com esse nome já existe",
+   "item_deleted": "Item removido com sucesso",
+   "item_updated": "Item atualizado com sucesso",
+   
+   "store_not_found": "Loja não encontrada",
+   "store_already_exists": "Uma loja com esse nome já existe",
+   "store_created": "Loja criada com sucesso",
+   "store_removed": "Loja removida com sucesso",
+   
+   "user_already_exists": "Usuario com esse username já existe",
+   "email_already_exists": "Email já cadastrado",
+   "user_created": "Usuário criado, por favor ative-o no email",
+   "user_not_found": "Usuário nao encontrado",
+   "user_deleted": "Usuário removido com sucesso",
+   "user_unconfirmed": "Conta não ativada, por favor, cheque seu email",
+   "user_logout": "Usuário desconectado",
+   "wrong_pass_or_user": "Usuário ou senha errados"
+}

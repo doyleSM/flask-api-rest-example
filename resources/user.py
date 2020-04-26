@@ -1,5 +1,6 @@
 import traceback
 from flask_restful import Resource, request
+from libs.strings import gettext
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import (
     create_access_token,
@@ -29,20 +30,20 @@ class UserRegister(Resource):
             return e.messages, 400
 
         if UserModel.find_by_username(user.username):
-            return {"message": "user with this username already exists"}, 400
+            return {"message": gettext("user_already_exists")}, 400
 
         if UserModel.find_by_email(user.email):
-            return {"message": "user with this email already exists"}, 400
+            return {"message": gettext("email_already_exists")}, 400
 
         try:
             user.save_to_db()
             confirmation = ConfirmationModel(user.id)
             confirmation.save_to_db()
             user.send_confirmation_email()
-            return {"message": "Por favor ative no email"}, 201
+            return {"message": gettext("user_created")}, 201
         except:
             traceback.print_exc()
-            return{"message": "erro na criacao"}, 500
+            return{"message": gettext("error_500")}, 500
 
 
 class User(Resource):
@@ -52,7 +53,7 @@ class User(Resource):
         user = UserModel.find_by_id(user_id)
         if user:
             return user_schema.dump(user)
-        return {"message": "user not found"}, 404
+        return {"message": gettext("user_not_found")}, 404
 
     @classmethod
     @fresh_jwt_required
@@ -60,8 +61,8 @@ class User(Resource):
         user = UserModel.find_by_id(user_id)
         if user:
             user.delete_from_db()
-            return {"message": "deleted"}
-        return {"message": "User not exists"}, 404
+            return {"message": gettext("user_deleted")}
+        return {"message": gettext("user_not_found")}, 404
 
 
 class UserLogin(Resource):
@@ -84,8 +85,8 @@ class UserLogin(Resource):
                     identity=user.id, fresh=True)
                 refresh_token = create_refresh_token(user.id)
                 return {"access_token": access_token, "refresh_token": refresh_token}
-            return {"message": "Conta não confirmada, por favor, verifique seu email"}, 400
-        return {"message": "user or password wrong"}, 401
+            return {"message": gettext("user_unconfirmed")}, 400
+        return {"message": gettext("wrong_pass_or_user")}, 401
 
 
 class UserLogout(Resource):
@@ -95,7 +96,7 @@ class UserLogout(Resource):
     def post(cls):
         jti = get_raw_jwt()['jti']  # wti = identificador unico do token
         BLACKLIST.add(jti)
-        return {"message": "deslogado com sucesso"}
+        return {"message": gettext("user_logout")}
 
 
 class TokenRefresh(Resource):
