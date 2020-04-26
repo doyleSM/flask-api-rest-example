@@ -14,10 +14,9 @@ from marshmallow import ValidationError
 from blacklist import BLACKLIST
 from models.user import UserModel
 from schemas.user import UserSchema
-
+from models.confirmation import ConfirmationModel
 
 user_schema = UserSchema()
-
 
 
 class UserRegister(Resource):
@@ -37,6 +36,8 @@ class UserRegister(Resource):
 
         try:
             user.save_to_db()
+            confirmation = ConfirmationModel(user.id)
+            confirmation.save_to_db()
             user.send_confirmation_email()
             return {"message": "Por favor ative no email"}, 201
         except:
@@ -77,7 +78,8 @@ class UserLogin(Resource):
         user = UserModel.find_by_username(user_data.username)
 
         if user and safe_str_cmp(user.password, user_data.password):
-            if user.activated:
+            confirmation = user.most_recent_confirmation
+            if confirmation and confirmation.confirmed:
                 access_token = create_access_token(
                     identity=user.id, fresh=True)
                 refresh_token = create_refresh_token(user.id)
@@ -104,14 +106,3 @@ class TokenRefresh(Resource):
         current_user = get_jwt_identity()
         new_token = create_access_token(identity=current_user, fresh=False)
         return {"access_token": new_token}
-
-
-class UserConfirm(Resource):
-    @classmethod
-    def get(cls, user_id: int):
-        user = UserModel.find_by_id(user_id)
-        if user:
-            user.activated = True
-            user.save_to_db()
-            return {"message": "User activated"}
-        return {"message": "user not found"}, 404
