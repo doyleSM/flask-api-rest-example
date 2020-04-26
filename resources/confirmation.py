@@ -1,13 +1,16 @@
 from flask_restful import Resource
 from models.confirmation import ConfirmationModel
 from models.user import UserModel
+from schemas.confirmation import ConfirmationSchema
+from time import time
 
+confirmation_schema = ConfirmationSchema()
 
 class Confirmation(Resource):
     @classmethod
     def get(cls, confirmation_id: str):
         confirmation = ConfirmationModel.find_by_id(confirmation_id)
-        if not confirmation_id:
+        if not confirmation_id or not confirmation:
             return {"message": "não encontrado"}, 404
 
         if confirmation.expired:
@@ -31,7 +34,7 @@ class ConfirmationByUser(Resource):
             {
                 "current_time": int(time()),
                 "confirmation": [
-                    confirmation_schema.dump(each) for each in user.confirmation(ConfirmationModel.expire_at)
+                    confirmation_schema.dump(each) for each in user.confirmation.order_by(ConfirmationModel.expire_at)
                 ],
             }, 200
         )

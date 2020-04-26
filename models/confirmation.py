@@ -34,9 +34,9 @@ class ConfirmationModel(db.Model):
             self.save_to_db()
 
     def save_to_db(self):
-        de.session.add(self)
-        de.session.commit()
+        db.session.add(self)
+        db.session.commit()
 
     def delete_from_db(self):
-        de.session.delete(self)
-        de.session.commit()
+        db.session.delete(self)
+        db.session.commit()

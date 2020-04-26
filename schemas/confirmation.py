@@ -2,7 +2,7 @@ from ma import ma
 from models.confirmation import ConfirmationModel
 
 
-class ItemSchema(ma.ModelSchema):
+class ConfirmationSchema(ma.ModelSchema):
     class Meta:
         model = ConfirmationModel
         load_only = ("user",)
