@@ -1,0 +1,28 @@
+{
+   "confirmation_not_found": "Email confirmation not found",
+   "alread_email_confirm": "This email has already been verified",
+   "success_confirmation": "Email address confirmed successfully",
+   "expired_token": "Expired token",
+   "new_email_confirmation": "Confirmation resubmission done, check your email",
+   
+   "error_500": "An unexpected error has occurred",
+   
+   "item_not_found": "Item not found",
+   "item_already_exist": "An item with that name already exists",
+   "item_deleted": "Successfully removed item",
+   "item_updated": "Item updated successfully",
+   
+   "store_not_found": "Store not found",
+   "store_already_exists": "A store with that name already exists",
+   "store_created": "Successfully created store",
+   "store_removed": "Store removed successfully",
+   
+   "user_already_exists": "User with that username already exists",
+   "email_already_exists": "E-mail already registered",
+   "user_created": "User created, please activate it in email",
+   "user_not_found": "User not found",
+   "user_deleted": "User removed successfully",
+   "user_unconfirmed": "Account not activated, please check your email",
+   "user_logout": "User disconnected",
+   "wrong_pass_or_user": "Wrong username or password"
+}

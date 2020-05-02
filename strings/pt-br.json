@@ -17,12 +17,12 @@
    "store_created": "Loja criada com sucesso",
    "store_removed": "Loja removida com sucesso",
    
-   "user_already_exists": "Usuario com esse username já existe",
+   "user_already_exists": "Usuário com esse username já existe",
    "email_already_exists": "Email já cadastrado",
    "user_created": "Usuário criado, por favor ative-o no email",
-   "user_not_found": "Usuário nao encontrado",
+   "user_not_found": "Usuário não encontrado",
    "user_deleted": "Usuário removido com sucesso",
-   "user_unconfirmed": "Conta não ativada, por favor, cheque seu email",
+   "user_unconfirmed": "Conta não ativada, por favor, verifique seu email",
    "user_logout": "Usuário desconectado",
    "wrong_pass_or_user": "Usuário ou senha errados"
 }
