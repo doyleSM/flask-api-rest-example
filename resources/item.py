@@ -1,6 +1,7 @@
 
 from flask_restful import Resource
 from flask import request
+from libs.strings import gettext
 from flask_jwt_extended import jwt_required
 from models.item import ItemModel
 from marshmallow import ValidationError
@@ -16,13 +17,13 @@ class Item(Resource):
         item = ItemModel.find_by_name(name)
         if item:
             return item_schema.dump(item)
-        return {"message": "Item not found"}, 404
+        return {"message":gettext("item_not_found")}, 404
 
     @classmethod
     @jwt_required
     def post(cls, name: str):
         if ItemModel.find_by_name(name):
-            return {"message": "Item already exists"}, 400
+            return {"message": gettext("item_already_exist")}, 400
         
         item_json = request.get_json()
         item_json["name"] = name
@@ -33,7 +34,7 @@ class Item(Resource):
         try:
             item.save_to_db()
         except:
-            return {"message": "ocorreu um erro"}, 500
+            return {"message":gettext("error_500")}, 500
         return item_schema.dump(item), 201
 
     @classmethod
@@ -42,8 +43,8 @@ class Item(Resource):
         item = ItemModel.find_by_name(name)
         if item:
             item.delete_from_db()
-            return {"message": "item deleted"}, 201
-        return {"message": "item not exists"}, 400
+            return {"message": gettext("item_deleted")}, 201
+        return {"message": gettext("item_not_found")}, 404
 
     @classmethod
     @jwt_required
@@ -53,7 +54,7 @@ class Item(Resource):
         if item:
             item.price = item_json["price"]
             item.save_to_db()
-            return {"message": "updated"}, 200
+            return {"message": gettext("item_updated")}, 200
         item_json["name"] = name
         try:
             item = item_schema.load(item_json)

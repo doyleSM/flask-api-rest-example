@@ -10,6 +10,6 @@ class UserSchema(ma.ModelSchema):
         dump_only = ("id", "confirmation",)
 
     @pre_dump
-    def _pre_dump(self, user):
+    def _pre_dump(self, user, **kwargs):
         user.confirmation = [user.most_recent_confirmation]
         return user
