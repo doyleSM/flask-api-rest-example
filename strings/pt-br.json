@@ -26,6 +26,7 @@
    "user_logout": "Usuário desconectado",
    "wrong_pass_or_user": "Usuário ou senha errados",
    "image_uploaded": "Imagem '{}' uploaded",
-   "image_illegal_extension": "Extensão '{}' não é permitida"
-
+   "image_illegal_extension": "Extensão '{}' não é permitida",
+   "illegal_filename": "Arquivo com nome '{}' não é permitido",
+   "image_not_found": "imagem '{}', não foi encontrada"
 }
