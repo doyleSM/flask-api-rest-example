@@ -7,7 +7,7 @@ class FileStorageField(fields.Field):
         "invalid": "Imagem invalida"
     }
 
-    def _deserialize(self, value, attr, data):
+    def _deserialize(self, value, attr, data, **kwargs):
         if value is None:
             return None
         if not isinstance(value, FileStorage):

@@ -24,5 +24,8 @@
    "user_deleted": "User removed successfully",
    "user_unconfirmed": "Account not activated, please check your email",
    "user_logout": "User disconnected",
-   "wrong_pass_or_user": "Wrong username or password"
+   "wrong_pass_or_user": "Wrong username or password",
+   "image_uploaded": "Image '{}' uploaded",
+   "image_illegal_extension": "Extension '{}' is not allowed"
+
 }
