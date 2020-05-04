@@ -28,6 +28,7 @@
    "image_uploaded": "Image '{}' uploaded",
    "image_illegal_extension": "Extension '{}' is not allowed",
    "illegal_filename": "Illegal '{}', not allowed",
-   "image_not_found": "image '{}', not found"
+   "image_not_found": "image '{}', not found",
+   "image_deleted": "image '{}', was deleted"
 
 }
