@@ -1,7 +1,8 @@
 import traceback
 from flask_restful import Resource, request
 from libs.strings import gettext
-from werkzeug.security import safe_str_cmp
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -26,6 +27,7 @@ class UserRegister(Resource):
     def post(cls):
         try:
             user = user_schema.load(request.get_json())
+            user.password = generate_password_hash(user.password)
         except ValidationError as e:
             return e.messages, 400
 
@@ -78,7 +80,7 @@ class UserLogin(Resource):
 
         user = UserModel.find_by_username(user_data.username)
 
-        if user and safe_str_cmp(user.password, user_data.password):
+        if user and check_password_hash(user.password, user_data.password):
             confirmation = user.most_recent_confirmation
             if confirmation and confirmation.confirmed:
                 access_token = create_access_token(
