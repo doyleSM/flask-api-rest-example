@@ -1,26 +1,25 @@
+import os
+
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from marshmallow import ValidationError
-from dotenv import load_dotenv
-from flask_uploads import configure_uploads, patch_request_class
-from ma import ma
+
 from db import db
-from resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
-from resources.item import Item, ItemList
-from resources.store import Store, StoreList
-from resources.confirmation import Confirmation, ConfirmationByUser
-from resources.image import ImageUpload, Image
-from libs.image_helper import IMAGE_SET
-from blacklist import BLACKLIST
+from ma import ma
+from resources.user import UserRegister, UserLogin, User
+
 
 app = Flask(__name__)
-load_dotenv(".env", verbose=True)
-app.config.from_object("default_config")
-app.config.from_envvar("APPLICATION_SETTINGS")
-patch_request_class(app, 20 * 1024 * 1024) #max mb upload
-configure_uploads(app, IMAGE_SET)
+app.config["DEBUG"] = True
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    "DATABASE_URI", "sqlite:///data.db"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["PROPAGATE_EXCEPTIONS"] = True
+app.secret_key = "jose"
 api = Api(app)
+jwt = JWTManager(app)
 
 
 @app.before_first_request
@@ -30,32 +29,14 @@ def create_tables():
 
 @app.errorhandler(ValidationError)
 def handle_marshmallow_validation(err):
-    return jsonify(err.messges), 400
+    return jsonify(err.messages), 400
 
 
-jwt = JWTManager(app)
+api.add_resource(UserRegister, "/register")
+api.add_resource(User, "/user/<int:user_id>")
+api.add_resource(UserLogin, "/login")
 
-
-@jwt.token_in_blacklist_loader
-def check_if_token_in_blacklist(decrypted_token):
-    return decrypted_token['jti'] in BLACKLIST
-
-
-api.add_resource(Item, '/item/<string:name>')
-api.add_resource(ItemList, '/items')
-api.add_resource(UserRegister, '/register')
-api.add_resource(Store, '/store/<string:name>')
-api.add_resource(StoreList, '/stores')
-api.add_resource(User, '/user/<int:user_id>')
-api.add_resource(UserLogin, '/auth')
-api.add_resource(TokenRefresh, '/refresh')
-api.add_resource(UserLogout, '/logout')
-api.add_resource(Confirmation, '/user_confirmation/<string:confirmation_id>')
-api.add_resource(ConfirmationByUser, '/confirmation/user/<int:user_id>')
-api.add_resource(ImageUpload, '/upload/image' )
-api.add_resource(Image, '/image/<string:filename>' )
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     db.init_app(app)
     ma.init_app(app)
-    app.run(port=5001, debug=True)
+    app.run(port=5000, debug=True)
